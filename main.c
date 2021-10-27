@@ -4,5 +4,7 @@
 int main() {
     /* Driver code starts */
     showIdentity();
+    createLinkedList();
+    printLinkedList(head);
     return 0;
 }
