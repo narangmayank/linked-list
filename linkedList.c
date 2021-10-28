@@ -77,6 +77,9 @@ void scanfPlusPlus(int * elementAddress) {
     printf("]\n");
  }
 
+ /* Function to reverse the linked list
+  * @details : It will take only head of linked list as an argument (Call by value only)
+  */
  void reverseLinkedList(Node * ptrToFirstNode) {
 
     Node * prevNode = NULL;                                // pointer to previous node
@@ -101,4 +104,149 @@ void scanfPlusPlus(int * elementAddress) {
 
     /* now all link are reversed but our main head is still there , so change it last node */
     head = prevNode;                                  
+ }
+ 
+ /* Function to get the length of linked list (number of nodes)
+  * @details : It will take only head of linked list as an argument (Call by value only)
+  */
+ int getLinkedListLength(Node * ptrToFirstNode) {
+    int linkedListLength = 0;
+
+    /* traverse through out of linked and keep increment one counter , that sit */
+    while(ptrToFirstNode != NULL) {
+       ptrToFirstNode = ptrToFirstNode -> ptrToNextNode;
+       linkedListLength++;
+    }
+
+    return linkedListLength;                       // return length
+ }
+
+ /* Function to add a node to linked list at the beginning
+  * @details : It will take only head of linked list as an argument (Call by value only)
+  */
+ void insertAtBegin(Node * ptrToFirstNode) {
+    int nodeData = 0;            // hold data to be added to the new node
+   
+    /* ask user about data and store it into one buffer */
+    printf("I'm inside insertAtBgein, Please enter element you want to add : ");
+    scanfPlusPlus(&nodeData);
+
+    /* create a new node and make the link part of it to refer to first node */
+    Node * newNodePtr = (Node *)malloc(sizeof(Node));      
+
+    newNodePtr -> data = nodeData;                         // fill the data field 
+    newNodePtr -> ptrToNextNode = ptrToFirstNode;          // give refrence of first node to its link field
+
+    head = newNodePtr;                                     // make new node as first node
+ }
+
+ /* Function to add a node to linked list at somewhere in the middle
+  * @details : It will take only head of linked list as an argument (Call by value only)
+  */
+ void insertAtMiddle(Node * ptrToFirstNode) {
+    int reach = 0;               // counter to go to desired location
+    int tryCount = 0;            // hold number of retries by the user
+    int nodeData = 0;            // hold data to be added to the new node
+    int nodeIndex = -1;          // hold index , where we have to add the new node
+   
+    /* ask user about where to add the node in the middle and store it into buffer */
+    printfPlusPlus("I'm inside insertAtMiddle, Please tell me where you want to add the node in the middle ? ");
+    do {
+       /* If max retries limit reached , print info about it and return */
+       if(tryCount == MAX_RETRIES) {                    
+          printfPlusPlus("Sorry bro, Hard Luck !!");       
+          return;                                          
+       }
+
+       tryCount++;                                 // Increment to get update of failed attemp by the user
+       printf("%d :: Enter the index : ",tryCount);
+       scanfPlusPlus(&nodeIndex);
+    }
+    /* validate the index */
+    while(nodeIndex <= 0 || nodeIndex >= getLinkedListLength(ptrToFirstNode)-1);
+    
+    /* ask user about data and store it into buffer */
+    printf("Please enter element you want to add : ");
+    scanfPlusPlus(&nodeData);
+    
+    /* reach just before the desire index */
+    while(reach != nodeIndex - 1) {
+       ptrToFirstNode = ptrToFirstNode -> ptrToNextNode;
+       reach++;
+    }
+
+    /* create a new node and give the refrence of this node to that node where you are now */
+    Node * newNodePtr = (Node *)malloc(sizeof(Node));
+    newNodePtr -> data = nodeData;                           // fill the data field 
+
+    /* give refrence of next node to new node */
+    newNodePtr -> ptrToNextNode = ptrToFirstNode -> ptrToNextNode;      
+
+    /* give refrence of new node to current node */
+    ptrToFirstNode -> ptrToNextNode = newNodePtr;               
+ }
+ 
+ /* Function to add a node to linked list at the end
+  * @details : It will take only head of linked list as an argument (Call by value only)
+  */
+ void insertAtEnd(Node * ptrToFirstNode) {
+    int nodeData = 0;            // hold data to be added to the new node
+
+    /* ask user about data and store it into one buffer */
+    printf("I'm inside insertAtEnd, Please enter element you want to add : ");
+    scanfPlusPlus(&nodeData);
+    
+    /* traverse throught the whole linked list until you not meet last node */
+    while((ptrToFirstNode -> ptrToNextNode) != NULL) {
+       ptrToFirstNode = ptrToFirstNode -> ptrToNextNode;
+    }
+
+    /* create a new node give the refrence of this node to link field of last node */
+    Node * newNodePtr = (Node *)malloc(sizeof(Node));
+    newNodePtr -> data = nodeData;                           // fill the data field 
+    newNodePtr -> ptrToNextNode = NULL;                      // make this node refer to NULL
+
+    /* now we are at the last node , just make it refer to new node instead to NULL */
+    ptrToFirstNode -> ptrToNextNode = newNodePtr;
+ }
+
+ /* Function to add a node to linked list at some specific location
+  * @details : It will take only head of linked list as an argument (Call by value only)
+  */
+ void addNode(Node * ptrToFirstNode) {
+    int tryCount = 0;                         // hold number of retries by the user
+    int userChoice = -1;                      // where you want to add the node ?
+
+   printfPlusPlus("Tell me where you want to add the node ? ");
+    do {
+      /* If max retries limit reached , print info about it and return */
+       if(tryCount == MAX_RETRIES) {                    
+          printfPlusPlus("Sorry bro, Hard Luck !!");       
+          return;                                          
+       }
+
+       tryCount++;                                 // Increment to get update of failed attemp by the user
+       /* print info about what user can do */
+       printf("%d :: 1 ->  Beginning or 2 -> Somewhere in the middle or 3 -> End : ",tryCount);  
+       scanfPlusPlus(&userChoice);        // take user choice 
+    } 
+    /* choice must be acceptable, otherwise don't go ahead */
+    while(userChoice < 1 || userChoice > 3);
+
+    /* switch choice , just call the right fun() and break */
+    switch(userChoice) {
+       case 1:
+            insertAtBegin(ptrToFirstNode);              // fun() to add node at beginning
+            break;
+       case 2:
+            /* fun() to add the node at somewhere in the middle , user will tell by somehow */
+            insertAtMiddle(ptrToFirstNode);             
+            break;
+       case 3:
+            insertAtEnd(ptrToFirstNode);                // fun() to add node at end
+            break;
+       default:
+            printfPlusPlus("Unexpected thing happen !!");
+            break;
+    }
  }

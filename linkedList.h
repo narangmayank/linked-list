@@ -23,5 +23,8 @@ void showIdentity();
 void createLinkedList();
 void printLinkedList(Node *);
 void reverseLinkedList(Node *);
+int getLinkedListLength(Node *);
 
+void addNode(Node *);
+void removeNode(Node *);
 #endif 
