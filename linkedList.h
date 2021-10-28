@@ -22,4 +22,6 @@ void printfPlusPlus(char *);
 void showIdentity();
 void createLinkedList();
 void printLinkedList(Node *);
+void reverseLinkedList(Node *);
+
 #endif 

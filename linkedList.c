@@ -76,3 +76,29 @@ void scanfPlusPlus(int * elementAddress) {
     }
     printf("]\n");
  }
+
+ void reverseLinkedList(Node * ptrToFirstNode) {
+
+    Node * prevNode = NULL;                                // pointer to previous node
+    Node * currentNode = ptrToFirstNode;                   // pointer to current node
+    Node * nextNode = currentNode -> ptrToNextNode;        // pointer to next node 
+
+    while(currentNode != NULL) {
+       currentNode -> ptrToNextNode = prevNode;            // link reversal
+       
+       /* shift all pointers one step ahead */
+       prevNode = currentNode;                             
+       currentNode = nextNode;
+
+       /* keep this in if case , otherwise at the last step you will get segmentation fault 
+        * because at the last it points to NULL and you are trying to access the link field
+        * of NULL (PS : You can't) 
+        */
+       if(nextNode != NULL) {                               
+          nextNode = nextNode -> ptrToNextNode;
+       }
+    }
+
+    /* now all link are reversed but our main head is still there , so change it last node */
+    head = prevNode;                                  
+ }
