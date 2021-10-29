@@ -16,14 +16,20 @@ int main() {
 
     printf("Length of linked list is : %d\n",getLinkedListLength(head));
 
-    /* This is the main feature of the linked list , that we can extend or shrink
-     * it at the run time according to our requirement 
+    /* This is the main feature of the linked list , that we can extend it
+     * at the run time according to our requirement 
      */
     addNode(head);    
 
     printf("Length of linked list is : %d\n",getLinkedListLength(head));
-
     printLinkedList(head);                // print linked list
 
+    /* This is the main feature of the linked list , that we can shrink it
+     * at the run time according to our requirement 
+     */
+    removeNode(head);
+    
+    printf("Length of linked list is : %d\n",getLinkedListLength(head));
+    printLinkedList(head);
     return 0;
 }

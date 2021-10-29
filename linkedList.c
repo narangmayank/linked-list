@@ -151,6 +151,7 @@ void scanfPlusPlus(int * elementAddress) {
    
     /* ask user about where to add the node in the middle and store it into buffer */
     printfPlusPlus("I'm inside insertAtMiddle, Please tell me where you want to add the node in the middle ? ");
+    printf("Length of Linked List is : %d\n",getLinkedListLength(ptrToFirstNode));
     do {
        /* If max retries limit reached , print info about it and return */
        if(tryCount == MAX_RETRIES) {                    
@@ -217,7 +218,7 @@ void scanfPlusPlus(int * elementAddress) {
     int tryCount = 0;                         // hold number of retries by the user
     int userChoice = -1;                      // where you want to add the node ?
 
-   printfPlusPlus("Tell me where you want to add the node ? ");
+    printfPlusPlus("Tell me where you want to add the node ? ");
     do {
       /* If max retries limit reached , print info about it and return */
        if(tryCount == MAX_RETRIES) {                    
@@ -247,6 +248,89 @@ void scanfPlusPlus(int * elementAddress) {
             break;
        default:
             printfPlusPlus("Unexpected thing happen !!");
+            break;
+    }
+ }
+
+ void removeNodeAtIndex(Node * ptrToFirstNode) {
+    int reach = 0; 
+    int tryCount  = 0;
+    int nodeIndex = -1;
+
+   /* ask user about from where we have to remove the node */
+    printfPlusPlus("I'm inside removeNodeAtIndex, Please tell from where you want to remove the node ? ");
+    printf("Length of Linked List is : %d\n",getLinkedListLength(ptrToFirstNode));
+    do {
+       /* If max retries limit reached , print info about it and return */
+       if(tryCount == MAX_RETRIES) {                    
+          printfPlusPlus("Sorry bro, Hard Luck !!");       
+          return;                                          
+       }
+
+       tryCount++;                                 // Increment to get update of failed attemp by the user
+       printf("%d :: Enter the index : ",tryCount);
+       scanfPlusPlus(&nodeIndex);
+    }
+    /* validate the index */
+    while(nodeIndex < 0 || nodeIndex > getLinkedListLength(ptrToFirstNode)-1);
+
+    /* reach towards the desired index */
+    while(reach != nodeIndex - 1) {
+       ptrToFirstNode = ptrToFirstNode -> ptrToNextNode;
+       reach++;
+    }
+    
+    /* Point to previous and next node from which node we have to remove */
+    Node * ptrToPrevNode = ptrToFirstNode;
+    Node * ptrToNextNode = (ptrToFirstNode -> ptrToNextNode) -> ptrToNextNode;
+    
+    /* just you have the give the refrence of next node to previous node 
+     * PS : Don't forget to de allocate the memory deleted node 
+     */
+
+    free(ptrToPrevNode -> ptrToNextNode);               // free that node which link is cutted from linked list
+    ptrToPrevNode -> ptrToNextNode = ptrToNextNode;     // point to next node in the linked list
+ }
+
+ void removeNodewithData(Node * ptrToFirstNode) {
+    
+ }
+
+ void removeNode(Node * ptrToFirstNode) {
+    int choice   = 0;
+    int tryCount = 0;              
+    int nodeData = 0;
+    int nodeIndex = -1;
+    
+    printfPlusPlus("Tell me either node data or node index you want to remove ?");
+    do {
+       /* If max retries limit reached , print info about it and return */
+       if(tryCount == MAX_RETRIES) {                    
+          printfPlusPlus("Sorry bro, Hard Luck !!");       
+          return;                                          
+       }
+
+       tryCount++;                                 // Increment to get update of failed attemp by the user
+       /* print info about what user can do */
+       printf("%d :: 1 -> node index or 2 -> node data : ",tryCount);
+       scanfPlusPlus(&choice);                     // take user choice and store it somewhere
+    }
+    /* validate the user input */
+    while(choice < 1 || choice > 2);
+    
+    /* switch choice , just call the right fun() and break */
+    switch(choice) {
+       case 1:
+            removeNodeAtIndex(ptrToFirstNode);               // fun() to remove node by index 
+            break;
+       case 2:
+            /* this fun() will remove first occurance of node having user given data otherwise
+             * we will let the user know that the data they are looking for is not there in the
+             * linked list */
+            removeNodewithData(ptrToFirstNode);              
+            break;
+       default:
+            printfPlusPlus("Unexpected thing happens !!");
             break;
     }
  }
