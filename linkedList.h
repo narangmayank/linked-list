@@ -1,32 +1,39 @@
 #ifndef LINKEDLIST_DS_H
 #define LINKEDLIST_DS_H
 
-#include<stdio.h>
-#include<stdlib.h>
+#include<stdio.h>                      // Standard IO Header file 
+#include<stdlib.h>                     // Library for dynamic memory allocation
 
-#define MAX_RETRIES 3
+#define MAX_RETRIES 3                  // Macro to prevail max retries that user can have
 
-struct dummyNode{
-    int data;
-    struct dummyNode * ptrToNextNode;
+/* Structure of our node (how node looks like) */
+struct dummyNode{               
+    int data;                                      // data part as an integer
+    struct dummyNode * ptrToNextNode;              // link part as an Node * to hold address of node
 };
 
-typedef struct dummyNode Node;
+typedef struct dummyNode Node;                     // typedef to make things easier for us
 
-Node * head;
+/* head of our linked list (it points to first node and that is what we
+ * have in order to operate linked list data structure 
+ */
+Node * head;     
 
-
-void scanfPlusPlus(int *);
+/* Input Output fun() */
+void scanfPlusPlus(int *);                           
 void printfPlusPlus(char *);
 
-void showIdentity();
-void createLinkedList();
-void printLinkedList(Node *);
-void reverseLinkedList(Node *);
+void showIdentity();                         // show menu options
+void createLinkedList();                     // creating  linked list
+void printLinkedList(Node *);                // printing  linked list
+void reverseLinkedList(Node *);              // reversing linked list
 
-int getLinkedListLength(Node *);
-int searchDataInLinkedList(Node * , int);
+int getLinkedListLength(Node *);             // calculate length of linked list
+int searchDataInLinkedList(Node * , int);    // search an element in the linked list
 
-void addNode(Node *);
-void removeNode(Node *);
+/* This is the main feature of linked list that we can extend or shrink it according
+ * to our requirement
+ */
+void addNode(Node *);                        // add a new node to linked list
+void removeNode(Node *);                     // remove a existing node from linked list
 #endif 
