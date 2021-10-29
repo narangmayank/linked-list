@@ -121,6 +121,28 @@ void scanfPlusPlus(int * elementAddress) {
     return linkedListLength;                       // return length
  }
 
+ /* Function to search an element in the linked list (first occurance) 
+  * @details : It will take only head of linked list as an argument (Call by value only)
+  */
+ int searchDataInLinkedList(Node * ptrToFirstNode , int target) {
+   /* counter to mantain index of linked list , in case target is found return it */
+   int targetIndex = 0;         
+
+   /* traverse througout the whole linked list while mantaining one index and keep
+    * checking for the target , If it finds retrun the index otherwise retrun -1 
+    */
+   while(ptrToFirstNode != NULL) {
+      if(ptrToFirstNode -> data == target) {
+         return targetIndex;
+      }
+      targetIndex++;
+      ptrToFirstNode = ptrToFirstNode -> ptrToNextNode;
+   }
+
+   /* target not found , return -1 */
+   return -1;
+ }
+
  /* Function to add a node to linked list at the beginning
   * @details : It will take only head of linked list as an argument (Call by value only)
   */
@@ -251,13 +273,16 @@ void scanfPlusPlus(int * elementAddress) {
             break;
     }
  }
-
+ 
+ /* Function to remove a node from linked list by index
+  * @details : It will take only head of linked list as an argument (Call by value only)
+  */
  void removeNodeAtIndex(Node * ptrToFirstNode) {
-    int reach = 0; 
-    int tryCount  = 0;
-    int nodeIndex = -1;
+    int reach = 0;                       // counter to go to desired location
+    int tryCount  = 0;                   // counter to check for retries by the user
+    int nodeIndex = -1;                  // store index which is to be deleted 
 
-   /* ask user about from where we have to remove the node */
+    /* ask user about from where we have to remove the node */
     printfPlusPlus("I'm inside removeNodeAtIndex, Please tell from where you want to remove the node ? ");
     printf("Length of Linked List is : %d\n",getLinkedListLength(ptrToFirstNode));
     do {
@@ -291,16 +316,51 @@ void scanfPlusPlus(int * elementAddress) {
     free(ptrToPrevNode -> ptrToNextNode);               // free that node which link is cutted from linked list
     ptrToPrevNode -> ptrToNextNode = ptrToNextNode;     // point to next node in the linked list
  }
-
+ 
+ /* Function to remove a node from linked list by data
+  * @details : It will take only head of linked list as an argument (Call by value only)
+  */
  void removeNodewithData(Node * ptrToFirstNode) {
-    
+    int reach  = 0;                        // counter to go to desired location 
+    int nodeData  = 0;                     // data user want to remove from list
+    int nodeIndex = 0;                     // if data is there in the list , it will hold the index of it
+
+    /* ask user about from where we have to remove the node */
+    printf("I'm inside removeNodeWithData, Enter element you want to remove from list : ");
+    scanfPlusPlus(&nodeData);
+
+    nodeIndex = searchDataInLinkedList(ptrToFirstNode,nodeData);
+    if(nodeIndex == -1) {
+       printfPlusPlus("Element : %d is not there in the list , what bro ?");
+    }
+    else {
+       /* now element is there in the list and you already got the index of it 
+        * same thing you copy what we have previously did in removeNodeAtIndex*/
+       
+       /* reach towards the desired index */
+       while(reach != nodeIndex - 1) {
+          ptrToFirstNode = ptrToFirstNode -> ptrToNextNode;
+          reach++;
+       }
+         
+       /* Point to previous and next node from which node we have to remove */
+       Node * ptrToPrevNode = ptrToFirstNode;
+       Node * ptrToNextNode = (ptrToFirstNode -> ptrToNextNode) -> ptrToNextNode;
+      
+       /* just you have the give the refrence of next node to previous node 
+       * PS : Don't forget to de allocate the memory deleted node 
+       */
+      free(ptrToPrevNode -> ptrToNextNode);               // free that node which link is cutted from linked list
+      ptrToPrevNode -> ptrToNextNode = ptrToNextNode;     // point to next node in the linked list
+    } 
  }
 
+ /* Function to remove a node from linked list either by index or by data
+  * @details : It will take only head of linked list as an argument (Call by value only)
+  */
  void removeNode(Node * ptrToFirstNode) {
-    int choice   = 0;
-    int tryCount = 0;              
-    int nodeData = 0;
-    int nodeIndex = -1;
+    int choice   = 0;                 // get the user choice , we will validate 
+    int tryCount = 0;                 // hold number of retries taken by the user
     
     printfPlusPlus("Tell me either node data or node index you want to remove ?");
     do {
