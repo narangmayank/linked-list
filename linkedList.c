@@ -1,5 +1,15 @@
 #include "linkedList.h"                        // Header for linkedList data structure
 
+/* boolean to check if list is there ot not , if it is there we don't let user 
+ * to make another instance of it unless they delete the previous one
+ */
+bool is_list_there = false;
+
+/* head of our linked list (it points to first node and that is what we
+ * have in order to operate linked list data structure 
+ */
+Node * head = NULL;     
+
 void scanfPlusPlus(int * elementAddress) {
     scanf("%d",elementAddress);                // Take integer from standard input
     while ((getchar()) != '\n');               // Flush the standard input buffer
@@ -12,7 +22,7 @@ void scanfPlusPlus(int * elementAddress) {
 
  void showIdentity() {
     int userChoice = 0;              // hold choice of user
-    int searchData = 0;              // used in search fun() to hold the data that user want to search
+    int returnValue = 0;             // used to hold the return value of search fun() and length fun()
     
     /* Print info about itself (consider menu) */
     printf("\n");
@@ -40,24 +50,47 @@ void scanfPlusPlus(int * elementAddress) {
        /* If user enter other than choice , give him info about that and reset the choice variable */
        if(userChoice < 1 || userChoice > 9) {
           userChoice = 0;
-          printfPlusPlus("Hey bro, please choose from the menu !!");
        }
        
        /* based on user choice , swicth to desired fun() */
        switch(userChoice) {
+          case 0:
+               /* tell user to enter option from menu only */
+               printfPlusPlus("Please choose from the menu !!");
+               break;
           case 1:
                /* This fun() call will ask you for number of node you want to start with 
                 * along with the data corresponding to each node
                 */
-               createLinkedList();
+               if(is_list_there) {
+                  printfPlusPlus("You have already created the list , delete it to create a new one !!");
+               }
+               else {
+                  createLinkedList();
+               }
                break;
           case 2:
-               printf("Length of linked list is : %d\n",getLinkedListLength(head));
+               /* call the getLinkedListLength fun () and check for return value , if it 
+                * is valid then display the length to the user 
+                */
+               returnValue = getLinkedListLength(head);
+               if(returnValue != ERROR_LIST_NOT_FOUND) {
+                  printf("Length of linked list is : %d\n",returnValue);
+               }
                break;
           case 3:
-               printf("Enter element you want to search in the linked list : ");
-               scanfPlusPlus(&searchData);
-               printf("Element index is : %d\n",searchDataInLinkedList(head,searchData));
+               /* call the searchdataInLinkedList fun () and check for return value , if it 
+                * is valid then display the index of that element to user
+                */
+               returnValue = searchDataInLinkedList(head);
+               if(returnValue != ERROR_LIST_NOT_FOUND) {
+                  if(returnValue == -1) {
+                     printfPlusPlus("Element is not there in the linked list , check by printing the linked list");
+                  }
+                  else {
+                     printf("Element index is : %d\n",returnValue);
+                  }
+               }
                break;
           case 4:
                /* This is the main feature of the linked list , that we can extend it
@@ -72,18 +105,22 @@ void scanfPlusPlus(int * elementAddress) {
                removeNode(head);
                break;
           case 6:
+               /* print linked list */
                printLinkedList(head);
                break;
           case 7:
-              reverseLinkedList(head);
+               /* reverse linked list */ 
+               reverseLinkedList(head);
              break;
           case 8:
                printfPlusPlus("delete functionality will be there soon !!");
                break;
           case 9:
+               /* It's time to say good bye to user */
                printfPlusPlus("Thank you for using me, Bye.");
                break;
           default:
+               /* make sure this will not happen in any case */
                printfPlusPlus("Unexpected thing happens !!");
                break;
        }
@@ -137,15 +174,22 @@ void scanfPlusPlus(int * elementAddress) {
        prevNodePtr -> data = dataSet[i];                                 // Fill the data element 
        prevNodePtr -> ptrToNextNode = NULL;                              // Make link field as NULL 
     }
+
+    is_list_there = true;       // boolean to know if list is there or not
  }
 
  /* Function to print the linked list , only data part 
   * @details : It will take only head of linked list as an argument (Call by value only)
   */
  void printLinkedList(Node * ptrToFirstNode) {
-    printf("Linked List ----> [ ");
-
+    /* check for null pointer's , its a good practice to avoid any error later on */
+    if(ptrToFirstNode == NULL) {
+       printfPlusPlus("I'm inside printLinkedList , list not found.");
+       return;
+    }
+    
     /* Move through out the linked list, until you not met NULL in the node link field */
+    printf("Linked List ----> [ ");
     while(ptrToFirstNode != NULL) {                                       
        printf("%d ",ptrToFirstNode -> data);                 // print the data of node pointed by the pointer
        ptrToFirstNode = ptrToFirstNode -> ptrToNextNode;     // point to next node in the linked list using node link field
@@ -157,13 +201,15 @@ void scanfPlusPlus(int * elementAddress) {
   * @details : It will take only head of linked list as an argument (Call by value only)
   */
  void reverseLinkedList(Node * ptrToFirstNode) {
+    /* check for null pointer's , its a good practice to avoid any error later on */
+    if(ptrToFirstNode == NULL) {
+       printfPlusPlus("I'm inside reverseLinkedList , list not found.");
+       return;
+    }
+
     Node * prevNode = NULL;                                // pointer to previous node
     Node * currentNode = ptrToFirstNode;                   // pointer to current node
-    Node * nextNode = NULL;
-
-    if(ptrToFirstNode != NULL) {
-       nextNode = currentNode -> ptrToNextNode;            // pointer to next node if it exists
-    }
+    Node * nextNode = currentNode -> ptrToNextNode;        // pointer to next node if it exists
     
     while(currentNode != NULL) {
        currentNode -> ptrToNextNode = prevNode;            // link reversal
@@ -189,23 +235,37 @@ void scanfPlusPlus(int * elementAddress) {
   * @details : It will take only head of linked list as an argument (Call by value only)
   */
  int getLinkedListLength(Node * ptrToFirstNode) {
-    int linkedListLength = 0;
-
+    /* check for null pointer's , its a good practice to avoid any error later on */
+    if(ptrToFirstNode == NULL) {
+       printfPlusPlus("I'm inside getLinkedListLength , list not found.");
+       return ERROR_LIST_NOT_FOUND;
+    }
+   
     /* traverse through out of linked and keep increment one counter , that sit */
+    int linkedListLength = 0;
     while(ptrToFirstNode != NULL) {
        ptrToFirstNode = ptrToFirstNode -> ptrToNextNode;
        linkedListLength++;
     }
-
     return linkedListLength;                       // return length
  }
 
  /* Function to search an element in the linked list (first occurance) 
   * @details : It will take only head of linked list as an argument (Call by value only)
   */
- int searchDataInLinkedList(Node * ptrToFirstNode , int target) {
+ int searchDataInLinkedList(Node * ptrToFirstNode) {
+    /* check for null pointer's , its a good practice to avoid any error later on */
+    if(ptrToFirstNode == NULL) {
+       printfPlusPlus("I'm inside searchDataInLinkedList , list not found.");
+       return ERROR_LIST_NOT_FOUND;
+    }
+
    /* counter to mantain index of linked list , in case target is found return it */
-   int targetIndex = 0;         
+   int target = 0;
+   int targetIndex = 0;        
+
+   printf("Enter element you want to search in the linked list : ");
+   scanfPlusPlus(&target); 
 
    /* traverse througout the whole linked list while mantaining one index and keep
     * checking for the target , If it finds retrun the index otherwise retrun -1 
@@ -226,6 +286,12 @@ void scanfPlusPlus(int * elementAddress) {
   * @details : It will take only head of linked list as an argument (Call by value only)
   */
  void insertAtBegin(Node * ptrToFirstNode) {
+    /* check for null pointer's , its a good practice to avoid any error later on */
+    if(ptrToFirstNode == NULL) {
+       printfPlusPlus("I'm inside insertAtBegin , list not found.");
+       return;
+    }
+
     int nodeData = 0;            // hold data to be added to the new node
    
     /* ask user about data and store it into one buffer */
@@ -245,6 +311,12 @@ void scanfPlusPlus(int * elementAddress) {
   * @details : It will take only head of linked list as an argument (Call by value only)
   */
  void insertAtMiddle(Node * ptrToFirstNode) {
+    /* check for null pointer's , its a good practice to avoid any error later on */
+    if(ptrToFirstNode == NULL) {
+       printfPlusPlus("I'm inside insertAtMiddle , list not found.");
+       return;
+    }
+
     int reach = 0;               // counter to go to desired location
     int tryCount = 0;            // hold number of retries by the user
     int nodeData = 0;            // hold data to be added to the new node
@@ -292,7 +364,9 @@ void scanfPlusPlus(int * elementAddress) {
   * @details : It will take only head of linked list as an argument (Call by value only)
   */
  void insertAtEnd(Node * ptrToFirstNode) {
+    /* check for null pointer's , its a good practice to avoid any error later on */
     if(ptrToFirstNode == NULL) {
+       printfPlusPlus("I'm inside insertAtEnd , list not found.");
        return;
     }
 
@@ -320,6 +394,12 @@ void scanfPlusPlus(int * elementAddress) {
   * @details : It will take only head of linked list as an argument (Call by value only)
   */
  void addNode(Node * ptrToFirstNode) {
+    /* check for null pointer's , its a good practice to avoid any error later on */
+    if(ptrToFirstNode == NULL) {
+       printfPlusPlus("I'm inside addNode , list not found.");
+       return;
+    }
+
     int tryCount = 0;                         // hold number of retries by the user
     int userChoice = -1;                      // where you want to add the node ?
 
@@ -361,6 +441,12 @@ void scanfPlusPlus(int * elementAddress) {
   * @details : It will take only head of linked list as an argument (Call by value only)
   */
  void removeNodeAtIndex(Node * ptrToFirstNode) {
+    /* check for null pointer's , its a good practice to avoid any error later on */
+    if(ptrToFirstNode == NULL) {
+       printfPlusPlus("I'm inside removeNodeAtIndex , list not found.");
+       return;
+    }
+
     int reach = 0;                       // counter to go to desired location
     int tryCount  = 0;                   // counter to check for retries by the user
     int nodeIndex = -1;                  // store index which is to be deleted 
@@ -404,17 +490,19 @@ void scanfPlusPlus(int * elementAddress) {
   * @details : It will take only head of linked list as an argument (Call by value only)
   */
  void removeNodewithData(Node * ptrToFirstNode) {
+    /* check for null pointer's , its a good practice to avoid any error later on */
+    if(ptrToFirstNode == NULL) {
+       printfPlusPlus("I'm inside removeNodeWithData , list not found.");
+       return;
+    }
+
     int reach  = 0;                        // counter to go to desired location 
-    int nodeData  = 0;                     // data user want to remove from list
     int nodeIndex = 0;                     // if data is there in the list , it will hold the index of it
 
-    /* ask user about from where we have to remove the node */
-    printf("I'm inside removeNodeWithData, Enter element you want to remove from list : ");
-    scanfPlusPlus(&nodeData);
-
-    nodeIndex = searchDataInLinkedList(ptrToFirstNode,nodeData);
+    /* this fun() will ask user about target we have to remove from linked list */
+    nodeIndex = searchDataInLinkedList(ptrToFirstNode);
     if(nodeIndex == -1) {
-       printf("Element : %d is not there in the list , what bro ?\n",nodeData);
+       printfPlusPlus("Element is not there in the linked list , check by printing the linked list");
     }
     else {
        /* now element is there in the list and you already got the index of it 
@@ -441,8 +529,7 @@ void scanfPlusPlus(int * elementAddress) {
           */
           free(ptrToPrevNode -> ptrToNextNode);               // free that node which link is cutted from linked list
           ptrToPrevNode -> ptrToNextNode = ptrToNextNode;     // point to next node in the linked list
-       }
-       
+       }  
     } 
  }
 
@@ -450,6 +537,12 @@ void scanfPlusPlus(int * elementAddress) {
   * @details : It will take only head of linked list as an argument (Call by value only)
   */
  void removeNode(Node * ptrToFirstNode) {
+    /* check for null pointer's , its a good practice to avoid any error later on */
+    if(ptrToFirstNode == NULL) {
+       printfPlusPlus("I'm inside removeNode , list not found.");
+       return;
+    }
+
     int choice   = 0;                 // get the user choice , we will validate 
     int tryCount = 0;                 // hold number of retries taken by the user
     
