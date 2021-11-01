@@ -26,7 +26,10 @@ void scanfPlusPlus(int *);
 void printfPlusPlus(char *);
 
 void showIdentity();                         // show menu options
+
 void createLinkedList();                     // creating  linked list
+void deleteLinkedList(Node *);               // deleting  linked list
+
 void printLinkedList(Node *);                // printing  linked list
 void reverseLinkedList(Node *);              // reversing linked list
 

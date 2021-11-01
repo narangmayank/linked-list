@@ -113,7 +113,13 @@ void scanfPlusPlus(int * elementAddress) {
                reverseLinkedList(head);
              break;
           case 8:
-               printfPlusPlus("delete functionality will be there soon !!");
+               /* delete linked list */
+               if(!is_list_there) {
+                  printfPlusPlus("You have not created the linked list yet , create one to delete");
+               }
+               else {
+                  deleteLinkedList(head);
+               }
                break;
           case 9:
                /* It's time to say good bye to user */
@@ -175,7 +181,47 @@ void scanfPlusPlus(int * elementAddress) {
        prevNodePtr -> ptrToNextNode = NULL;                              // Make link field as NULL 
     }
 
-    is_list_there = true;       // boolean to know if list is there or not
+    is_list_there = true;                    // set this boolean to show the list presence
+ }
+ 
+ /* Function to delete the linked list 
+  * @details : It will take only head of linked list as an argument (Call by value only)
+  */
+ void deleteLinkedList(Node * ptrToFirstNode) {
+    /* check for null pointer's , its a good practice to avoid any error later on */
+    if(ptrToFirstNode == NULL) {
+       printfPlusPlus("I'm inside deleteLinkedList , list not found.");
+       return;
+    }
+
+    /* do point to next node before deleting the current node and don't
+     * forgot to de allocate the memory used by the node's in the list 
+     */
+    Node * currentNode = ptrToFirstNode;
+    Node * nextNode = currentNode -> ptrToNextNode;
+
+    while(currentNode != NULL) {
+       /* free the memory of current node */
+       free(currentNode);
+
+       /* shift the pointer one step ahead ( make next node as current and next to next node as next node) */
+       currentNode = nextNode;   
+
+       /* keep this in if case , otherwise at the last step you will get segmentation fault 
+        * because at the last it points to NULL and you are trying to access the link field
+        * of NULL (PS : You can't) 
+        */
+       if(nextNode != NULL) {
+          nextNode = nextNode -> ptrToNextNode;
+       }                          
+    }
+    /* do not forgot to make head pointer as NULL as after freeing first node it
+     * becomes dangling pointer and it's obvious you will get unexpected output 
+     * and also it may be possible that it ends up with a crash 
+     */
+    head = NULL;         
+              
+    is_list_there = false;                   // reset this boolean to show list absence
  }
 
  /* Function to print the linked list , only data part 
