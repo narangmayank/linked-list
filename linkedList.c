@@ -5,11 +5,6 @@
  */
 bool is_list_there = false;
 
-/* head of our linked list (it points to first node and that is what we
- * have in order to operate linked list data structure 
- */
-Node * head = NULL;     
-
 void scanfPlusPlus(int * elementAddress) {
     scanf("%d",elementAddress);                // Take integer from standard input
     while ((getchar()) != '\n');               // Flush the standard input buffer
@@ -21,6 +16,11 @@ void scanfPlusPlus(int * elementAddress) {
  }
 
  void showIdentity() {
+    /* head of our linked list (it points to first node and that is what we
+     * have in order to operate linked list data structure 
+     */
+    Node * head = NULL;
+
     int userChoice = 0;              // hold choice of user
     int returnValue = 0;             // used to hold the return value of search fun() and length fun()
     
@@ -66,14 +66,14 @@ void scanfPlusPlus(int * elementAddress) {
                   printfPlusPlus("You have already created the list , delete it to create a new one !!");
                }
                else {
-                  createLinkedList();
+                  createLinkedList(&head);
                }
                break;
           case 2:
                /* call the getLinkedListLength fun () and check for return value , if it 
                 * is valid then display the length to the user 
                 */
-               returnValue = getLinkedListLength(head);
+               returnValue = getLinkedListLength(&head);
                if(returnValue != ERROR_LIST_NOT_FOUND) {
                   printf("Length of linked list is : %d\n",returnValue);
                }
@@ -82,7 +82,7 @@ void scanfPlusPlus(int * elementAddress) {
                /* call the searchdataInLinkedList fun () and check for return value , if it 
                 * is valid then display the index of that element to user
                 */
-               returnValue = searchDataInLinkedList(head);
+               returnValue = searchDataInLinkedList(&head);
                if(returnValue != ERROR_LIST_NOT_FOUND) {
                   if(returnValue == -1) {
                      printfPlusPlus("Element is not there in the linked list , check by printing the linked list");
@@ -96,21 +96,21 @@ void scanfPlusPlus(int * elementAddress) {
                /* This is the main feature of the linked list , that we can extend it
                 * at the run time according to our requirement 
                 */
-               addNode(head);
+               addNode(&head);
                break;
           case 5:
                /* This is the main feature of the linked list , that we can shrink it
                 * at the run time according to our requirement 
                 */
-               removeNode(head);
+               removeNode(&head);
                break;
           case 6:
                /* print linked list */
-               printLinkedList(head);
+               printLinkedList(&head);
                break;
           case 7:
                /* reverse linked list */ 
-               reverseLinkedList(head);
+               reverseLinkedList(&head);
              break;
           case 8:
                /* delete linked list */
@@ -118,7 +118,7 @@ void scanfPlusPlus(int * elementAddress) {
                   printfPlusPlus("You have not created the linked list yet , create one to delete");
                }
                else {
-                  deleteLinkedList(head);
+                  deleteLinkedList(&head);
                }
                break;
           case 9:
@@ -133,8 +133,11 @@ void scanfPlusPlus(int * elementAddress) {
     }
     while(userChoice != 9);                 // keep going until user don't want to close (see menu)
  }
-
- void createLinkedList() {
+ 
+ /* Function to create the linked list 
+  * @details : It will take only argument i.e pointer to head of linked list
+  */
+ void createLinkedList(Node ** ptrToHead) {
     int tryCount = 0;                       // count to hold number of retries by the user
     int numNodes = 0;                       // how many nodes user want ?
     int dataSet[10] = {};                   // hold values that user will give after entering number of nodes
@@ -159,17 +162,17 @@ void scanfPlusPlus(int * elementAddress) {
     for(int i=0; i<numNodes; i++) {
        scanf("%d",&dataSet[i]);
     }
-    while ((getchar()) != '\n');               // Flush the standard input buffer
+    while ((getchar()) != '\n');                           // Flush the standard input buffer
 
     /* Create first node and give it's refrence to head pointer */
-    head = (Node *)malloc(sizeof(Node));          // head --> Fisrt node
-    head -> data = dataSet[0];                    // Fill the data element
-    head -> ptrToNextNode = NULL;                 // Make link field as NULL
+    *ptrToHead = (Node *)malloc(sizeof(Node));            // head --> Fisrt node
+    (*ptrToHead) -> data = dataSet[0];                    // Fill the data element
+    (*ptrToHead) -> ptrToNextNode = NULL;                 // Make link field as NULL
 
     /* It hold the refrence of previous node , that's how we are able to make links between previous node
      * and current node , PS : Dont't forgot to update the refrence of previous node to current node after
      * the link is established */
-    Node *  prevNodePtr = head;       
+    Node *  prevNodePtr = *ptrToHead;       
 
     for(int i=1; i<numNodes; i++) {
 
@@ -187,9 +190,9 @@ void scanfPlusPlus(int * elementAddress) {
  /* Function to delete the linked list 
   * @details : It will take only head of linked list as an argument (Call by value only)
   */
- void deleteLinkedList(Node * ptrToFirstNode) {
+ void deleteLinkedList(Node ** ptrToHead) {
     /* check for null pointer's , its a good practice to avoid any error later on */
-    if(ptrToFirstNode == NULL) {
+    if(*ptrToHead == NULL) {
        printfPlusPlus("I'm inside deleteLinkedList , list not found.");
        return;
     }
@@ -197,7 +200,7 @@ void scanfPlusPlus(int * elementAddress) {
     /* do point to next node before deleting the current node and don't
      * forgot to de allocate the memory used by the node's in the list 
      */
-    Node * currentNode = ptrToFirstNode;
+    Node * currentNode = *ptrToHead;
     Node * nextNode = currentNode -> ptrToNextNode;
 
     while(currentNode != NULL) {
@@ -219,42 +222,42 @@ void scanfPlusPlus(int * elementAddress) {
      * becomes dangling pointer and it's obvious you will get unexpected output 
      * and also it may be possible that it ends up with a crash 
      */
-    head = NULL;         
+    *ptrToHead = NULL;         
               
     is_list_there = false;                   // reset this boolean to show list absence
  }
 
- /* Function to print the linked list , only data part 
-  * @details : It will take only head of linked list as an argument (Call by value only)
+ /* Function to print data part of the linked list 
+  * @details : It will take only argument i.e pointer to head of linked list
   */
- void printLinkedList(Node * ptrToFirstNode) {
+ void printLinkedList(Node ** ptrToHead) {   
     /* check for null pointer's , its a good practice to avoid any error later on */
-    if(ptrToFirstNode == NULL) {
+    if(*ptrToHead == NULL) {
        printfPlusPlus("I'm inside printLinkedList , list not found.");
        return;
     }
     
     /* Move through out the linked list, until you not met NULL in the node link field */
     printf("Linked List ----> [ ");
-    while(ptrToFirstNode != NULL) {                                       
-       printf("%d ",ptrToFirstNode -> data);                 // print the data of node pointed by the pointer
-       ptrToFirstNode = ptrToFirstNode -> ptrToNextNode;     // point to next node in the linked list using node link field
+    while(*ptrToHead != NULL) {                                       
+       printf("%d ",(*ptrToHead) -> data);                // print the data of node pointed by the double pointer
+       ptrToHead  = &((*ptrToHead) -> ptrToNextNode);     // point to link field of next node in the linked list 
     }
     printf("]\n");
  }
 
- /* Function to reverse the linked list
-  * @details : It will take only head of linked list as an argument (Call by value only)
+ /* Function to reverse the linked list 
+  * @details : It will take only argument i.e pointer to head of linked list
   */
- void reverseLinkedList(Node * ptrToFirstNode) {
+ void reverseLinkedList(Node ** ptrToHead) {
     /* check for null pointer's , its a good practice to avoid any error later on */
-    if(ptrToFirstNode == NULL) {
+    if(*ptrToHead == NULL) {
        printfPlusPlus("I'm inside reverseLinkedList , list not found.");
        return;
     }
 
     Node * prevNode = NULL;                                // pointer to previous node
-    Node * currentNode = ptrToFirstNode;                   // pointer to current node
+    Node * currentNode = *ptrToHead;                       // pointer to current node
     Node * nextNode = currentNode -> ptrToNextNode;        // pointer to next node if it exists
     
     while(currentNode != NULL) {
@@ -274,23 +277,23 @@ void scanfPlusPlus(int * elementAddress) {
     }
 
     /* now all link are reversed but our main head is still there , so change it last node */
-    head = prevNode;                                  
+    *ptrToHead = prevNode;                                  
  }
  
- /* Function to get the length of linked list (number of nodes)
-  * @details : It will take only head of linked list as an argument (Call by value only)
+ /* Function to get the length of the linked list (number of nodes)
+  * @details : It will take only argument i.e pointer to head of linked list
   */
- int getLinkedListLength(Node * ptrToFirstNode) {
+ int getLinkedListLength(Node ** ptrToHead) {
     /* check for null pointer's , its a good practice to avoid any error later on */
-    if(ptrToFirstNode == NULL) {
+    if(*ptrToHead == NULL) {
        printfPlusPlus("I'm inside getLinkedListLength , list not found.");
        return ERROR_LIST_NOT_FOUND;
     }
    
     /* traverse through out of linked and keep increment one counter , that sit */
     int linkedListLength = 0;
-    while(ptrToFirstNode != NULL) {
-       ptrToFirstNode = ptrToFirstNode -> ptrToNextNode;
+    while(*ptrToHead != NULL) {
+       ptrToHead = &((*ptrToHead) -> ptrToNextNode);
        linkedListLength++;
     }
     return linkedListLength;                       // return length
@@ -299,9 +302,9 @@ void scanfPlusPlus(int * elementAddress) {
  /* Function to search an element in the linked list (first occurance) 
   * @details : It will take only head of linked list as an argument (Call by value only)
   */
- int searchDataInLinkedList(Node * ptrToFirstNode) {
+ int searchDataInLinkedList(Node ** ptrToHead) {
     /* check for null pointer's , its a good practice to avoid any error later on */
-    if(ptrToFirstNode == NULL) {
+    if(*ptrToHead == NULL) {
        printfPlusPlus("I'm inside searchDataInLinkedList , list not found.");
        return ERROR_LIST_NOT_FOUND;
     }
@@ -316,24 +319,24 @@ void scanfPlusPlus(int * elementAddress) {
    /* traverse througout the whole linked list while mantaining one index and keep
     * checking for the target , If it finds retrun the index otherwise retrun -1 
     */
-   while(ptrToFirstNode != NULL) {
-      if(ptrToFirstNode -> data == target) {
+   while(*ptrToHead != NULL) {
+      if((*ptrToHead) -> data == target) {
          return targetIndex;
       }
       targetIndex++;
-      ptrToFirstNode = ptrToFirstNode -> ptrToNextNode;
+      ptrToHead = &((*ptrToHead) -> ptrToNextNode);
    }
 
    /* target not found , return -1 */
    return -1;
  }
 
- /* Function to add a node to linked list at the beginning
-  * @details : It will take only head of linked list as an argument (Call by value only)
+ /* Function to add a node in the linked list at the beginining
+  * @details : It will take only argument i.e pointer to head of linked list
   */
- void insertAtBegin(Node * ptrToFirstNode) {
+ void insertAtBegin(Node ** ptrToHead) {
     /* check for null pointer's , its a good practice to avoid any error later on */
-    if(ptrToFirstNode == NULL) {
+    if(*ptrToHead == NULL) {
        printfPlusPlus("I'm inside insertAtBegin , list not found.");
        return;
     }
@@ -348,17 +351,17 @@ void scanfPlusPlus(int * elementAddress) {
     Node * newNodePtr = (Node *)malloc(sizeof(Node));      
 
     newNodePtr -> data = nodeData;                         // fill the data field 
-    newNodePtr -> ptrToNextNode = ptrToFirstNode;          // give refrence of first node to its link field
+    newNodePtr -> ptrToNextNode = *ptrToHead;              // give refrence of first node to its link field
 
-    head = newNodePtr;                                     // make new node as first node
+    *ptrToHead = newNodePtr;                               // make new node as first node
  }
 
- /* Function to add a node to linked list at somewhere in the middle
-  * @details : It will take only head of linked list as an argument (Call by value only)
+ /* Function to add a node in the linked list at somewhere in the middle
+  * @details : It will take only argument i.e pointer to head of linked list
   */
- void insertAtMiddle(Node * ptrToFirstNode) {
+ void insertAtMiddle(Node ** ptrToHead) {
     /* check for null pointer's , its a good practice to avoid any error later on */
-    if(ptrToFirstNode == NULL) {
+    if(*ptrToHead == NULL) {
        printfPlusPlus("I'm inside insertAtMiddle , list not found.");
        return;
     }
@@ -370,7 +373,7 @@ void scanfPlusPlus(int * elementAddress) {
    
     /* ask user about where to add the node in the middle and store it into buffer */
     printfPlusPlus("I'm inside insertAtMiddle, Please tell me where you want to add the node in the middle ? ");
-    printf("Length of Linked List is : %d\n",getLinkedListLength(ptrToFirstNode));
+    printf("Length of Linked List is : %d\n",getLinkedListLength(ptrToHead));
     do {
        /* If max retries limit reached , print info about it and return */
        if(tryCount == MAX_RETRIES) {                    
@@ -383,7 +386,7 @@ void scanfPlusPlus(int * elementAddress) {
        scanfPlusPlus(&nodeIndex);
     }
     /* validate the index */
-    while(nodeIndex <= 0 || nodeIndex >= getLinkedListLength(ptrToFirstNode)-1);
+    while(nodeIndex <= 0 || nodeIndex >= getLinkedListLength(ptrToHead)-1);
     
     /* ask user about data and store it into buffer */
     printf("Please enter element you want to add : ");
@@ -391,7 +394,7 @@ void scanfPlusPlus(int * elementAddress) {
     
     /* reach just before the desire index */
     while(reach != nodeIndex - 1) {
-       ptrToFirstNode = ptrToFirstNode -> ptrToNextNode;
+       ptrToHead  = &((*ptrToHead) -> ptrToNextNode);
        reach++;
     }
 
@@ -400,18 +403,18 @@ void scanfPlusPlus(int * elementAddress) {
     newNodePtr -> data = nodeData;                           // fill the data field 
 
     /* give refrence of next node to new node */
-    newNodePtr -> ptrToNextNode = ptrToFirstNode -> ptrToNextNode;      
+    newNodePtr -> ptrToNextNode = (*ptrToHead) -> ptrToNextNode;      
 
     /* give refrence of new node to current node */
-    ptrToFirstNode -> ptrToNextNode = newNodePtr;               
+    (*ptrToHead) -> ptrToNextNode = newNodePtr;               
  }
  
- /* Function to add a node to linked list at the end
-  * @details : It will take only head of linked list as an argument (Call by value only)
+ /* Function to add a node in the linked list at the end
+  * @details : It will take only argument i.e pointer to head of linked list
   */
- void insertAtEnd(Node * ptrToFirstNode) {
+ void insertAtEnd(Node ** ptrToHead) {
     /* check for null pointer's , its a good practice to avoid any error later on */
-    if(ptrToFirstNode == NULL) {
+    if(*ptrToHead == NULL) {
        printfPlusPlus("I'm inside insertAtEnd , list not found.");
        return;
     }
@@ -423,8 +426,8 @@ void scanfPlusPlus(int * elementAddress) {
     scanfPlusPlus(&nodeData);
     
     /* traverse throught the whole linked list until you not meet last node */
-    while((ptrToFirstNode -> ptrToNextNode) != NULL) {
-       ptrToFirstNode = ptrToFirstNode -> ptrToNextNode;
+    while(((*ptrToHead) -> ptrToNextNode) != NULL) {
+       ptrToHead  = &((*ptrToHead) -> ptrToNextNode);
     }
 
     /* create a new node give the refrence of this node to link field of last node */
@@ -433,15 +436,15 @@ void scanfPlusPlus(int * elementAddress) {
     newNodePtr -> ptrToNextNode = NULL;                      // make this node refer to NULL
 
     /* now we are at the last node , just make it refer to new node instead to NULL */
-    ptrToFirstNode -> ptrToNextNode = newNodePtr;
+    (*ptrToHead) -> ptrToNextNode = newNodePtr;
  }
 
- /* Function to add a node to linked list at some specific location
-  * @details : It will take only head of linked list as an argument (Call by value only)
+ /* Function to add a node in the linked list at some specific location
+  * @details : It will take only argument i.e pointer to head of linked list
   */
- void addNode(Node * ptrToFirstNode) {
+ void addNode(Node ** ptrToHead) {
     /* check for null pointer's , its a good practice to avoid any error later on */
-    if(ptrToFirstNode == NULL) {
+    if(*ptrToHead == NULL) {
        printfPlusPlus("I'm inside addNode , list not found.");
        return;
     }
@@ -468,14 +471,14 @@ void scanfPlusPlus(int * elementAddress) {
     /* switch choice , just call the right fun() and break */
     switch(userChoice) {
        case 1:
-            insertAtBegin(ptrToFirstNode);              // fun() to add node at beginning
+            insertAtBegin(ptrToHead);              // fun() to add node at beginning
             break;
        case 2:
             /* fun() to add the node at somewhere in the middle , user will tell by somehow */
-            insertAtMiddle(ptrToFirstNode);             
+            insertAtMiddle(ptrToHead);             
             break;
        case 3:
-            insertAtEnd(ptrToFirstNode);                // fun() to add node at end
+            insertAtEnd(ptrToHead);                // fun() to add node at end
             break;
        default:
             printfPlusPlus("Unexpected thing happen !!");
@@ -484,11 +487,11 @@ void scanfPlusPlus(int * elementAddress) {
  }
  
  /* Function to remove a node from linked list by index
-  * @details : It will take only head of linked list as an argument (Call by value only)
+  * @details : It will take only argument i.e pointer to head of linked list
   */
- void removeNodeAtIndex(Node * ptrToFirstNode) {
+ void removeNodeAtIndex(Node ** ptrToHead) {
     /* check for null pointer's , its a good practice to avoid any error later on */
-    if(ptrToFirstNode == NULL) {
+    if(*ptrToHead == NULL) {
        printfPlusPlus("I'm inside removeNodeAtIndex , list not found.");
        return;
     }
@@ -499,7 +502,7 @@ void scanfPlusPlus(int * elementAddress) {
 
     /* ask user about from where we have to remove the node */
     printfPlusPlus("I'm inside removeNodeAtIndex, Please tell from where you want to remove the node ? ");
-    printf("Length of Linked List is : %d\n",getLinkedListLength(ptrToFirstNode));
+    printf("Length of Linked List is : %d\n",getLinkedListLength(ptrToHead));
     do {
        /* If max retries limit reached , print info about it and return */
        if(tryCount == MAX_RETRIES) {                    
@@ -512,17 +515,17 @@ void scanfPlusPlus(int * elementAddress) {
        scanfPlusPlus(&nodeIndex);
     }
     /* validate the index */
-    while(nodeIndex < 0 || nodeIndex > getLinkedListLength(ptrToFirstNode)-1);
+    while(nodeIndex < 0 || nodeIndex > getLinkedListLength(ptrToHead)-1);
 
     /* reach towards the desired index */
     while(reach != nodeIndex - 1) {
-       ptrToFirstNode = ptrToFirstNode -> ptrToNextNode;
+       ptrToHead  = &((*ptrToHead) -> ptrToNextNode);
        reach++;
     }
     
     /* Point to previous and next node from which node we have to remove */
-    Node * ptrToPrevNode = ptrToFirstNode;
-    Node * ptrToNextNode = (ptrToFirstNode -> ptrToNextNode) -> ptrToNextNode;
+    Node * ptrToPrevNode = *ptrToHead;
+    Node * ptrToNextNode = ((*ptrToHead) -> ptrToNextNode) -> ptrToNextNode;
     
     /* just you have the give the refrence of next node to previous node 
      * PS : Don't forget to de allocate the memory deleted node 
@@ -533,11 +536,11 @@ void scanfPlusPlus(int * elementAddress) {
  }
  
  /* Function to remove a node from linked list by data
-  * @details : It will take only head of linked list as an argument (Call by value only)
+  * @details : It will take only argument i.e pointer to head of linked list
   */
- void removeNodewithData(Node * ptrToFirstNode) {
+ void removeNodewithData(Node ** ptrToHead) {
     /* check for null pointer's , its a good practice to avoid any error later on */
-    if(ptrToFirstNode == NULL) {
+    if(*ptrToHead == NULL) {
        printfPlusPlus("I'm inside removeNodeWithData , list not found.");
        return;
     }
@@ -546,7 +549,7 @@ void scanfPlusPlus(int * elementAddress) {
     int nodeIndex = 0;                     // if data is there in the list , it will hold the index of it
 
     /* this fun() will ask user about target we have to remove from linked list */
-    nodeIndex = searchDataInLinkedList(ptrToFirstNode);
+    nodeIndex = searchDataInLinkedList(ptrToHead);
     if(nodeIndex == -1) {
        printfPlusPlus("Element is not there in the linked list , check by printing the linked list");
     }
@@ -555,20 +558,21 @@ void scanfPlusPlus(int * elementAddress) {
         * same thing you copy what we have previously did in removeNodeAtIndex*/
        
        if(nodeIndex == 0) { 
-          /* if it is first node , just shift the head one time and free the previous node */               
-          head = ptrToFirstNode -> ptrToNextNode;
-          free(ptrToFirstNode);
+          /* if it is first node , just shift the head one time and free the previous node */
+          Node * tempPtr = *ptrToHead;               
+          *ptrToHead = (*ptrToHead) -> ptrToNextNode;
+          free(tempPtr);
        }
        else {
           /* reach towards the desired index */
           while(reach != nodeIndex - 1) {
-             ptrToFirstNode = ptrToFirstNode -> ptrToNextNode;
+             ptrToHead = &((*ptrToHead) -> ptrToNextNode);
              reach++;
           }
             
           /* Point to previous and next node from which node we have to remove */
-          Node * ptrToPrevNode = ptrToFirstNode;
-          Node * ptrToNextNode = (ptrToFirstNode -> ptrToNextNode) -> ptrToNextNode;
+          Node * ptrToPrevNode = *ptrToHead;
+          Node * ptrToNextNode = ((*ptrToHead) -> ptrToNextNode) -> ptrToNextNode;
          
           /* just you have the give the refrence of next node to previous node 
           * PS : Don't forget to de allocate the memory deleted node 
@@ -582,9 +586,9 @@ void scanfPlusPlus(int * elementAddress) {
  /* Function to remove a node from linked list either by index or by data
   * @details : It will take only head of linked list as an argument (Call by value only)
   */
- void removeNode(Node * ptrToFirstNode) {
+ void removeNode(Node ** ptrToHead) {
     /* check for null pointer's , its a good practice to avoid any error later on */
-    if(ptrToFirstNode == NULL) {
+    if(*ptrToHead == NULL) {
        printfPlusPlus("I'm inside removeNode , list not found.");
        return;
     }
@@ -611,13 +615,13 @@ void scanfPlusPlus(int * elementAddress) {
     /* switch choice , just call the right fun() and break */
     switch(choice) {
        case 1:
-            removeNodeAtIndex(ptrToFirstNode);               // fun() to remove node by index 
+            removeNodeAtIndex(ptrToHead);               // fun() to remove node by index 
             break;
        case 2:
             /* this fun() will remove first occurance of node having user given data otherwise
              * we will let the user know that the data they are looking for is not there in the
              * linked list */
-            removeNodewithData(ptrToFirstNode);              
+            removeNodewithData(ptrToHead);              
             break;
        default:
             printfPlusPlus("Unexpected thing happens !!");

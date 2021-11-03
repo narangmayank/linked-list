@@ -7,6 +7,12 @@
 #define MAX_RETRIES 3                  // Macro to prevail max retries that user can have
 #define ERROR_LIST_NOT_FOUND -2        // Macro to get the status of linked list 
 
+/* Macro's to get the status of linked list 
+#define LIST_ERROR   -1
+#define LIST_SUCCESS -2
+#define ERROR_LIST_NOT_FOUND -3        
+* for future refrence only */
+
 /* union of our boolean (true & false) */
 typedef enum {
     false,
@@ -25,21 +31,21 @@ typedef struct dummyNode Node;                     // typedef to make things eas
 void scanfPlusPlus(int *);                           
 void printfPlusPlus(char *);
 
-void showIdentity();                         // show menu options
+void showIdentity();                          // show menu options
 
-void createLinkedList();                     // creating  linked list
-void deleteLinkedList(Node *);               // deleting  linked list
+void createLinkedList(Node **);               // creating  linked list
+void deleteLinkedList(Node **);               // deleting  linked list
 
-void printLinkedList(Node *);                // printing  linked list
-void reverseLinkedList(Node *);              // reversing linked list
+void printLinkedList(Node **);                // printing  linked list
+void reverseLinkedList(Node **);              // reversing linked list
 
-int getLinkedListLength(Node *);             // calculate length of linked list
-int searchDataInLinkedList(Node *);          // search an element in the linked list
+int getLinkedListLength(Node **);             // get length of the linked list
+int searchDataInLinkedList(Node **);          // search an element in the linked list
 
 /* This is the main feature of linked list that we can extend or shrink it according
  * to our requirement
  */
-void addNode(Node *);                        // add a new node to linked list
-void removeNode(Node *);                     // remove a existing node from linked list
+void addNode(Node **);                        // add a new node to linked list
+void removeNode(Node **);                     // remove a existing node from linked list
 
 #endif 
