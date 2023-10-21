@@ -2,6 +2,7 @@
     "files.associations": {
         "stdlib.h": "c",
         "malloc.h": "c",
-        "stdlib_s.h": "c"
+        "stdlib_s.h": "c",
+        "linked_list.h": "c"
     }
 }

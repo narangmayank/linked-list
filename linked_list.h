@@ -1,11 +1,14 @@
 #ifndef LINKEDLIST_DS_H
 #define LINKEDLIST_DS_H
 
-#include<stdio.h>                      // Standard IO Header file 
-#include<stdlib.h>                     // Library for dynamic memory allocation
+#include <stdio.h>
+#include <stdlib.h>
 
-#define MAX_RETRIES 3                  // Macro to prevail max retries that user can have
-#define ERROR_LIST_NOT_FOUND -2        // Macro to get the status of linked list 
+// Macro to prevail max retries that user can have
+#define MAX_RETRIES 3
+
+// Macro to get the status of linked list 
+#define ERROR_LIST_NOT_FOUND -2
 
 /* Macro's to get the status of linked list 
 #define LIST_ERROR   -1

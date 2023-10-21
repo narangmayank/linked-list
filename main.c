@@ -1,11 +1,14 @@
-#include<stdio.h>             // Standard IO Header file      
-#include"linkedList.h"        // Header for linkedList data structure
+#include <stdio.h>  
+#include "linked_list.h"
 
 int main() {
+
     /* Driver code starts */
 
-    showIdentity();                       // what you can do ? (that sit)
+    // what you can do ? (that sit)
+    showIdentity();
     
     /* Driver code ends */
+
     return 0;                                  
 }

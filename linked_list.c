@@ -1,4 +1,4 @@
-#include "linkedList.h"                        // Header for linkedList data structure
+#include "linked_list.h"
 
 /* boolean to check if list is there ot not , if it is there we don't let user 
  * to make another instance of it unless they delete the previous one
