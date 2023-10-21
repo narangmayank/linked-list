@@ -55,3 +55,9 @@ Please choose from the menu !!
 Please enter your choice : 9
 Thank you for using me, Bye.
 ```
+
+## Contribution
+
+Contributions are welcome!
+
+See the [contributing guide](./CONTRIBUTING.md) for detailed instructions on how to get started with the Library. Please follow the general code of conduct while contributing.
