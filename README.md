@@ -2,6 +2,8 @@
 
 Let's Explore Linked List :)
 
+This project is started using [kickoff-cli](https://github.com/narangmayank/kickoff-cli)
+
 ## Get the Project
 ```
 # step into cloned repo directory
@@ -25,6 +27,8 @@ $ main.exe
 
 ```
 Hey there, I am an instance of linkedList data strcuture.
+Happy Usage !!
+
 *************************Menu****************************
 1 : create linked list
 2 : get length of linked list
@@ -36,7 +40,6 @@ Hey there, I am an instance of linkedList data strcuture.
 8 : delete linked list
 9 : exit program
 *************************Menu****************************
-Happy Usage !!
 
 Please enter your choice : 1
 1 :: How many nodes you want : 5

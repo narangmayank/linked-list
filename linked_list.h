@@ -34,8 +34,6 @@ typedef struct dummyNode Node;                     // typedef to make things eas
 void scanfPlusPlus(int *);                           
 void printfPlusPlus(char *);
 
-void showIdentity();                          // show menu options
-
 void createLinkedList(Node **);               // creating  linked list
 void deleteLinkedList(Node **);               // deleting  linked list
 
@@ -50,5 +48,7 @@ int searchDataInLinkedList(Node **);          // search an element in the linked
  */
 void addNode(Node **);                        // add a new node to linked list
 void removeNode(Node **);                     // remove a existing node from linked list
+
+extern bool is_list_there;
 
 #endif 
